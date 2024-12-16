@@ -24,6 +24,15 @@ const client = generateClient({
 });
 
 export default function App() {
+
+  const getCurrentDateTime = () => {
+    const now = new Date();
+    // Format: YYYY-MM-DDThh:mm
+    return now.toISOString().slice(0, 16);
+  };
+
+  const [currentDateTime, setCurrentDateTime] = useState(getCurrentDateTime());
+
   const [sensors, setSensors] = useState([]);
 
   useEffect(() => {
@@ -36,13 +45,19 @@ export default function App() {
     event.preventDefault();
     const form = new FormData(event.target);
 
+    const installDateTime = new Date(form.get("install_datetime")).toISOString();
+
+    console.log('Form data being submitted:', {
+      form: Object.fromEntries(form),
+      install_datetime: installDateTime});
+
     await client.models.Sensor.create({
       sensor_id: form.get("sensor_id"),
       sensor_model_id: form.get("sensor_model_id"),
       wireless_device_id: form.get("wireless_device_id"),
       wireless_device_arn: form.get("wireless_device_arn"),
       location_id: form.get("location_id"),
-      install_datetime: form.get("install_datetime")
+      install_datetime: installDateTime
     });
 
     event.target.reset();
@@ -122,9 +137,12 @@ export default function App() {
               />
               <TextField
                 name="install_datetime"
-                placeholder="Datetime of Install"
+                placeholder="Date and time of Install"
                 label="Installation Datetime"
-                type="string"
+                type="datetime-local"
+                step="1800"
+                value={currentDateTime}
+                onChange={(e) => setCurrentDateTime(e.target.value)}
                 labelHidden
                 variation="quiet"
                 required
@@ -159,7 +177,10 @@ export default function App() {
                   <Heading level="3">{sensor.sensor_id}</Heading>
                 </View>
                 <Text fontStyle="italic">{sensor.sensor_model_id}</Text>
-
+                <Text fontStyle="italic">{sensor.wireless_device_id}</Text>
+                <Text fontStyle="italic">{sensor.wireless_device_arn}</Text>
+                <Text fontStyle="italic">{sensor.location_id}</Text>
+                <Text fontStyle="italic">{sensor.install_datetime}</Text>
                 <Button
                   variation="destructive"
                   onClick={() => deleteSensor(sensor)}
