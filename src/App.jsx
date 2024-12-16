@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import {
   Authenticator,
   Button,
@@ -14,6 +15,7 @@ import { Amplify } from "aws-amplify";
 import "@aws-amplify/ui-react/styles.css";
 import { generateClient } from "aws-amplify/data";
 import outputs from "../amplify_outputs.json";
+import NavBar from './components/NavBar';
 /**
  * @type {import('aws-amplify/data').Client<import('../amplify/data/resource').Schema>}
  */
@@ -53,9 +55,9 @@ export default function App() {
 
     await client.models.Sensor.create({
       sensor_id: form.get("sensor_id"),
-      sensor_model_id: form.get("sensor_model_id"),
+      sensor_model: form.get("sensor_model"),
       wireless_device_id: form.get("wireless_device_id"),
-      wireless_device_arn: form.get("wireless_device_arn"),
+      wireless_device_eui: form.get("wireless_device_eui"),
       location_id: form.get("location_id"),
       install_datetime: installDateTime
     });
@@ -74,6 +76,8 @@ export default function App() {
   return (
     <Authenticator>
       {({ signOut }) => (
+        <>
+        <NavBar signOut={signOut} />
         <Flex
           className="App"
           justifyContent="center"
@@ -100,9 +104,9 @@ export default function App() {
                 required
               />
               <TextField
-                name="sensor_model_id"
-                placeholder="Sensor Model ID"
-                label="Sensor Model ID"
+                name="sensor_model"
+                placeholder="Sensor Model Name"
+                label="Sensor Model Name"
                 type="string"
                 labelHidden
                 variation="quiet"
@@ -118,9 +122,9 @@ export default function App() {
                 required
               />
               <TextField
-                name="wireless_device_arn"
-                placeholder="Wireless Device ARN"
-                label="Wireless Device ARN"
+                name="wireless_device_eui"
+                placeholder="Wireless Device EUI"
+                label="Wireless Device EUI"
                 type="string"
                 labelHidden
                 variation="quiet"
@@ -176,22 +180,22 @@ export default function App() {
                 <View>
                   <Heading level="3">{sensor.sensor_id}</Heading>
                 </View>
-                <Text fontStyle="italic">{sensor.sensor_model_id}</Text>
+                <Text fontStyle="italic">{sensor.sensor_model}</Text>
                 <Text fontStyle="italic">{sensor.wireless_device_id}</Text>
-                <Text fontStyle="italic">{sensor.wireless_device_arn}</Text>
+                <Text fontStyle="italic">{sensor.wireless_device_eui}</Text>
                 <Text fontStyle="italic">{sensor.location_id}</Text>
                 <Text fontStyle="italic">{sensor.install_datetime}</Text>
                 <Button
                   variation="destructive"
                   onClick={() => deleteSensor(sensor)}
                 >
-                  Delete note
+                  Delete sensor
                 </Button>
               </Flex>
             ))}
           </Grid>
-          <Button onClick={signOut}>Sign Out</Button>
         </Flex>
+        </>
       )}
     </Authenticator>
   );

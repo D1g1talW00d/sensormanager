@@ -10,9 +10,9 @@ const schema = a.schema({
   Sensor: a
     .model({
       sensor_id: a.string(),
-      sensor_model_id: a.string(),
+      sensor_model: a.string(),
       wireless_device_id: a.string(),
-      wireless_device_arn: a.string(),
+      wireless_device_eui: a.string(),
       location_id: a.string(),
       install_datetime: a.datetime(),
     })
