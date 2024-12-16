@@ -122,7 +122,7 @@ export default function App() {
               />
               <TextField
                 name="install_datetime"
-                placeholder="Installation Datetime"
+                placeholder="Datetime of Install"
                 label="Installation Datetime"
                 type="string"
                 labelHidden
